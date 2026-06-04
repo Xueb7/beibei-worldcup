@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 世界杯 · 赛程规划</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0d1b2a;
+  --paper:#f4f1ea;
+  --paper-2:#ece7db;
+  --gold:#c8a24a;
+  --gold-deep:#a07c2c;
+  --red:#b3122a;
+  --green:#0d6e4f;
+  --blue:#13497a;
+  --line:rgba(13,27,42,.14);
+  --shadow:0 8px 30px rgba(13,27,42,.12);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Noto Sans SC',sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  background-image:
+    radial-gradient(circle at 12% 10%, rgba(200,162,74,.07), transparent 45%),
+    radial-gradient(circle at 88% 80%, rgba(19,73,122,.06), transparent 45%);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+.grain{position:fixed;inset:0;pointer-events:none;opacity:.035;z-index:1;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+
+/* ---------- Header ---------- */
+header{
+  position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#0d1b2a 0%, #16314b 55%, #0d1b2a 100%);
+  color:var(--paper);
+  padding:46px 24px 38px;
+  border-bottom:4px solid var(--gold);
+}
+header::before{content:"26";position:absolute;right:-20px;top:-40px;
+  font-family:'Oswald';font-weight:700;font-size:330px;line-height:1;
+  color:rgba(255,255,255,.04);letter-spacing:-12px;}
+.brandwrap{max-width:1180px;margin:0 auto;position:relative;z-index:2}
+.kicker{font-family:'Oswald';letter-spacing:.42em;font-size:12px;
+  text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:10px}
+h1{font-family:'Oswald';font-weight:700;font-size:clamp(34px,6vw,68px);
+  line-height:.96;letter-spacing:-.01em;text-transform:uppercase}
+h1 em{font-style:normal;color:var(--gold)}
+.sub{margin-top:14px;font-size:14px;color:rgba(244,241,234,.72);max-width:560px;line-height:1.7}
+.hostflags{margin-top:20px;display:flex;gap:18px;flex-wrap:wrap;font-family:'Oswald';
+  letter-spacing:.12em;font-size:13px;color:rgba(244,241,234,.85)}
+.hostflags span{display:flex;align-items:center;gap:7px}
+.dot{width:8px;height:8px;border-radius:50%}
+
+/* ---------- Nav / toolbar ---------- */
+nav{position:sticky;top:0;z-index:20;background:rgba(244,241,234,.92);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+.navin{max-width:1180px;margin:0 auto;padding:11px 24px;display:flex;
+  gap:8px;align-items:center;flex-wrap:wrap}
+.tab{font-family:'Oswald';letter-spacing:.08em;text-transform:uppercase;
+  font-size:13px;padding:8px 16px;border:1px solid transparent;border-radius:30px;
+  cursor:pointer;color:var(--ink);background:none;transition:.18s;font-weight:500}
+.tab:hover{background:var(--paper-2)}
+.tab.active{background:var(--ink);color:var(--paper)}
+.spacer{flex:1}
+.watchbtn{font-family:'Oswald';letter-spacing:.06em;font-size:13px;
+  padding:8px 16px;border-radius:30px;border:1.5px solid var(--gold-deep);
+  background:none;color:var(--gold-deep);cursor:pointer;display:flex;gap:8px;align-items:center;transition:.18s}
+.watchbtn:hover{background:var(--gold);color:#fff;border-color:var(--gold)}
+.watchbtn .cnt{background:var(--red);color:#fff;border-radius:20px;
+  min-width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;
+  font-size:11px;padding:0 5px}
+
+/* ---------- Layout ---------- */
+main{max-width:1180px;margin:0 auto;padding:34px 24px 80px;position:relative;z-index:2}
+.view{display:none;animation:fade .4s ease}
+.view.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.viewhead{display:flex;align-items:baseline;gap:14px;margin-bottom:8px;flex-wrap:wrap}
+.viewhead h2{font-family:'Oswald';font-weight:600;font-size:26px;text-transform:uppercase;letter-spacing:.02em}
+.viewhead p{font-size:13px;color:rgba(13,27,42,.6)}
+.rule{height:2px;background:linear-gradient(90deg,var(--gold),transparent);margin:14px 0 26px}
+
+/* ---------- Filters ---------- */
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px;align-items:center}
+.flabel{font-family:'Oswald';font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:rgba(13,27,42,.5)}
+select,.pseudosel{font-family:'Noto Sans SC';font-size:13px;padding:7px 12px;
+  border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);cursor:pointer}
+
+/* ---------- Group cards ---------- */
+.groups{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:18px}
+.gcard{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;
+  box-shadow:var(--shadow);transition:.2s;display:flex;flex-direction:column}
+.gcard:hover{transform:translateY(-3px);box-shadow:0 14px 38px rgba(13,27,42,.16)}
+.ghead{background:var(--ink);color:var(--paper);padding:13px 16px;display:flex;
+  align-items:center;justify-content:space-between}
+.ghead .gl{font-family:'Oswald';font-weight:700;font-size:22px;letter-spacing:.05em}
+.ghead .gl small{font-size:12px;color:var(--gold);font-weight:400;letter-spacing:.1em;margin-left:6px}
+.gteams{padding:6px 0}
+.team{display:flex;align-items:center;gap:11px;padding:10px 16px;cursor:pointer;
+  transition:.14s;border-left:3px solid transparent}
+.team:hover{background:var(--paper-2)}
+.team.watched{border-left-color:var(--gold);background:rgba(200,162,74,.08)}
+.team .flag{font-size:20px;width:26px;text-align:center}
+.flag-img{display:inline-block;object-fit:cover;border-radius:50%;
+  vertical-align:middle;box-shadow:0 1px 3px rgba(13,27,42,.2);
+  background:#fff;aspect-ratio:1/1;border:1px solid rgba(13,27,42,.08)}
+.team .flag-img{width:24px;height:24px}
+.mside .flag-img{width:26px;height:26px}
+.wlchip .flag-img{width:20px;height:20px}
+.flag-fallback{font-size:18px}
+.team .tn{flex:1;font-size:14px;font-weight:500}
+.team .host{font-family:'Oswald';font-size:10px;letter-spacing:.1em;color:#fff;
+  background:var(--red);padding:2px 6px;border-radius:4px}
+.team .star{font-size:15px;opacity:.25;transition:.15s}
+.team:hover .star{opacity:.55}
+.team.watched .star{opacity:1;color:var(--gold-deep)}
+.gfoot{margin-top:auto;padding:11px 16px;border-top:1px solid var(--line);
+  font-size:12px;color:rgba(13,27,42,.55);display:flex;justify-content:space-between;align-items:center}
+.viewmatches{font-family:'Oswald';font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--blue);cursor:pointer;font-weight:500}
+.viewmatches:hover{color:var(--gold-deep)}
+
+/* ---------- Match list ---------- */
+.daygroup{margin-bottom:30px}
+.dayhead{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.dayhead .dnum{font-family:'Oswald';font-weight:700;font-size:30px;color:var(--gold-deep);line-height:1}
+.dayhead .dtxt{font-family:'Oswald';letter-spacing:.06em;font-size:14px;text-transform:uppercase;color:rgba(13,27,42,.7)}
+.dayhead .dline{flex:1;height:1px;background:var(--line)}
+.mlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px}
+.match{background:#fff;border:1px solid var(--line);border-radius:11px;padding:13px 15px;
+  display:flex;flex-direction:column;gap:9px;transition:.18s;position:relative;overflow:hidden}
+.match.hot{border-color:var(--gold);box-shadow:0 4px 18px rgba(200,162,74,.22)}
+.match.hot::after{content:"★";position:absolute;top:8px;right:11px;color:var(--gold);font-size:13px}
+.mtop{display:flex;justify-content:space-between;font-size:11px;color:rgba(13,27,42,.55)}
+.mtop .mtag{font-family:'Oswald';letter-spacing:.08em;color:var(--blue);font-weight:500}
+.mteams{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.mside{display:flex;align-items:center;gap:8px;flex:1}
+.mside.r{flex-direction:row-reverse;text-align:right}
+.mside .flag{font-size:21px}
+.mside .nm{font-size:15px;font-weight:600}
+.mside.watch .nm{color:var(--gold-deep)}
+.vs{font-family:'Oswald';font-size:12px;color:rgba(13,27,42,.4);letter-spacing:.1em}
+.mfoot{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:rgba(13,27,42,.55)}
+.mfoot .ven{display:flex;gap:5px;align-items:center}
+
+/* ---------- Watchlist ---------- */
+.empty{text-align:center;padding:70px 20px;color:rgba(13,27,42,.5)}
+.empty .ic{font-size:50px;margin-bottom:14px;opacity:.4}
+.empty p{font-size:14px;line-height:1.7}
+.wlteams{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:30px}
+.wlchip{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--gold);
+  padding:7px 12px 7px 14px;border-radius:30px;font-size:14px;font-weight:500;box-shadow:var(--shadow)}
+.wlchip .x{cursor:pointer;color:rgba(13,27,42,.4);font-size:16px;line-height:1;transition:.15s}
+.wlchip .x:hover{color:var(--red)}
+
+/* ---------- Bracket ---------- */
+.bracketscroll{overflow-x:auto;padding-bottom:16px}
+.bracket{display:flex;gap:36px;min-width:900px;padding:10px 4px}
+.bcol{display:flex;flex-direction:column;justify-content:space-around;gap:14px;min-width:178px}
+.bcolhead{font-family:'Oswald';letter-spacing:.1em;font-size:12px;text-transform:uppercase;
+  color:var(--gold-deep);text-align:center;margin-bottom:6px;font-weight:600}
+.bmatch{background:#fff;border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-size:12px;box-shadow:0 3px 12px rgba(13,27,42,.07)}
+.bmatch .bm-id{font-family:'Oswald';font-size:10px;color:var(--blue);letter-spacing:.08em;margin-bottom:5px}
+.bmatch .bm-r{padding:3px 0;color:rgba(13,27,42,.78);border-bottom:1px dashed var(--line)}
+.bmatch .bm-r:last-child{border:none}
+.bmatch .bm-meta{margin-top:6px;font-size:10.5px;color:rgba(13,27,42,.5)}
+.final{border-color:var(--gold);background:linear-gradient(180deg,#fff,#fdf8ec);box-shadow:0 8px 26px rgba(200,162,74,.28)}
+.final .bm-id{color:var(--gold-deep)}
+
+footer{text-align:center;padding:30px 20px;font-size:12px;color:rgba(13,27,42,.45);border-top:1px solid var(--line)}
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:var(--ink);color:var(--paper);padding:12px 22px;border-radius:30px;font-size:13px;
+  box-shadow:var(--shadow);z-index:50;transition:.3s;opacity:0}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+@media(max-width:600px){
+  header{padding:34px 18px 28px}
+  main{padding:24px 16px 60px}
+  .navin{padding:10px 16px}
+}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+
+<header>
+  <div class="brandwrap">
+    <div class="kicker">FIFA World Cup · Canada · Mexico · USA</div>
+    <h1>2026 世界杯<br><em>赛程规划</em></h1>
+    <p class="sub">第 23 届国际足协世界杯 · 2026 年 6 月 11 日 – 7 月 19 日 · 首次由三国联合举办，48 支球队、16 座城市、104 场比赛。挑选你关注的球队，打造专属观赛清单。</p>
+    <div class="hostflags">
+      <span><i class="dot" style="background:#b3122a"></i>🇨🇦 加拿大 · 2 城</span>
+      <span><i class="dot" style="background:#0d6e4f"></i>🇲🇽 墨西哥 · 3 城</span>
+      <span><i class="dot" style="background:#13497a"></i>🇺🇸 美国 · 11 城</span>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="navin">
+    <button class="tab active" data-view="groups">小组 · Groups</button>
+    <button class="tab" data-view="schedule">赛程 · Schedule</button>
+    <button class="tab" data-view="bracket">淘汰赛 · Bracket</button>
+    <span class="spacer"></span>
+    <button class="watchbtn" id="watchTab"><span>★ 我的观赛清单</span><span class="cnt" id="wcount">0</span></button>
+  </div>
+</nav>
+
+<main>
+  <!-- GROUPS -->
+  <section class="view active" id="view-groups">
+    <div class="viewhead"><h2>小组分组</h2><p>点击任意球队 ★ 加入观赛清单</p></div>
+    <div class="rule"></div>
+    <div class="groups" id="groupGrid"></div>
+  </section>
+
+  <!-- SCHEDULE -->
+  <section class="view" id="view-schedule">
+    <div class="viewhead"><h2>完整赛程</h2><p id="schedSub">小组赛全部比赛，按日期排列</p></div>
+    <div class="rule"></div>
+    <div class="filters">
+      <span class="flabel">筛选</span>
+      <select id="fGroup"><option value="all">全部小组</option></select>
+      <select id="fTeam"><option value="all">全部球队</option></select>
+      <select id="fStage"><option value="all">全部阶段</option><option value="group">小组赛</option></select>
+      <label style="display:flex;gap:6px;align-items:center;font-size:13px;cursor:pointer;margin-left:4px">
+        <input type="checkbox" id="fWatch"> 只看我的清单
+      </label>
+    </div>
+    <div id="schedBody"></div>
+  </section>
+
+  <!-- BRACKET -->
+  <section class="view" id="view-bracket">
+    <div class="viewhead"><h2>淘汰赛对阵图</h2><p>32 强 → 决赛 · 2026 年 7 月 19 日 · 纽约大都会人寿体育场</p></div>
+    <div class="rule"></div>
+    <div class="bracketscroll"><div class="bracket" id="bracketWrap"></div></div>
+  </section>
+
+  <!-- WATCHLIST -->
+  <section class="view" id="view-watch">
+    <div class="viewhead"><h2>我的观赛清单</h2><p id="watchSub"></p></div>
+    <div class="rule"></div>
+    <div id="watchBody"></div>
+  </section>
+</main>
+
+<footer>数据来源：维基百科 · 2026 国际足协世界杯 · 时间为当地时间 · 本规划工具仅供个人参考</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============ DATA ============ */
+// ISO 3166-1 country codes (FlagCDN); England / Scotland use GB subdivisions
+const CODE={
+ "墨西哥":"mx","南非":"za","韩国":"kr","捷克":"cz","加拿大":"ca","波黑":"ba",
+ "卡塔尔":"qa","瑞士":"ch","巴西":"br","摩洛哥":"ma","海地":"ht","苏格兰":"gb-sct",
+ "美国":"us","巴拉圭":"py","澳大利亚":"au","土耳其":"tr","德国":"de","库拉索":"cw",
+ "科特迪瓦":"ci","厄瓜多尔":"ec","荷兰":"nl","日本":"jp","瑞典":"se","突尼西亚":"tn",
+ "比利时":"be","埃及":"eg","伊朗":"ir","新西兰":"nz","西班牙":"es","佛得角":"cv",
+ "沙乌地阿拉伯":"sa","乌拉圭":"uy","法国":"fr","塞内加尔":"sn","伊拉克":"iq","挪威":"no",
+ "阿根廷":"ar","阿尔及利亚":"dz","奥地利":"at","约旦":"jo","葡萄牙":"pt","刚果民主共和国":"cd",
+ "乌兹别克斯坦":"uz","哥伦比亚":"co","英格兰":"gb-eng","克罗地亚":"hr","加纳":"gh","巴拿马":"pa"
+};
+// returns an <img> flag tag of given pixel size (rendered as a round chip via CSS)
+function FLAG(team,size){
+ const c=CODE[team];size=size||24;
+ if(!c)return '<span class="flag-fallback">⚽</span>';
+ const w2=size*2;
+ return `<img class="flag-img" src="https://flagcdn.com/h${size>=40?80:40}/${c}.png" `
+      + `srcset="https://flagcdn.com/h${w2>=80?160:80}/${c}.png 2x" `
+      + `width="${size}" alt="${team}国旗" loading="lazy">`;
+}
+const HOSTS=["墨西哥","加拿大","美国"];
+const GROUPS={
+ A:["墨西哥","南非","韩国","捷克"], B:["加拿大","波黑","卡塔尔","瑞士"],
+ C:["巴西","摩洛哥","海地","苏格兰"], D:["美国","巴拉圭","澳大利亚","土耳其"],
+ E:["德国","库拉索","科特迪瓦","厄瓜多尔"], F:["荷兰","日本","瑞典","突尼西亚"],
+ G:["比利时","埃及","伊朗","新西兰"], H:["西班牙","佛得角","沙乌地阿拉伯","乌拉圭"],
+ I:["法国","塞内加尔","伊拉克","挪威"], J:["阿根廷","阿尔及利亚","奥地利","约旦"],
+ K:["葡萄牙","刚果民主共和国","乌兹别克斯坦","哥伦比亚"], L:["英格兰","克罗地亚","加纳","巴拿马"]
+};
+const SEED={"墨西哥":1,"加拿大":1,"美国":1,"巴西":1,"德国":1,"荷兰":1,"比利时":1,"西班牙":1,"法国":1,"阿根廷":1,"葡萄牙":1,"英格兰":1};
+// matches: group stage [date, time, home, away, venue, matchNo, group]
+const M=[
+ ["6月11日","13:00","墨西哥","南非","墨西哥城 · 阿兹特克体育场",1,"A"],
+ ["6月11日","20:00","韩国","捷克","萨波潘 · 阿克伦球场",2,"A"],
+ ["6月12日","15:00","加拿大","波黑","多伦多 · BMO球场",3,"B"],
+ ["6月12日","18:00","美国","巴拉圭","英格尔伍德 · SoFi体育场",4,"D"],
+ ["6月13日","21:00","海地","苏格兰","福克斯堡 · 吉列体育场",5,"C"],
+ ["6月13日","21:00","澳大利亚","土耳其","温哥华 · 卑诗体育馆",6,"D"],
+ ["6月13日","18:00","巴西","摩洛哥","东卢瑟福 · 大都会人寿体育场",7,"C"],
+ ["6月13日","12:00","卡塔尔","瑞士","圣克拉拉 · 李维斯体育场",8,"B"],
+ ["6月14日","19:00","科特迪瓦","厄瓜多尔","费城 · 林肯金融球场",9,"E"],
+ ["6月14日","12:00","德国","库拉索","侯斯顿 · NRG体育场",10,"E"],
+ ["6月14日","15:00","荷兰","日本","阿灵顿 · AT&T体育场",11,"F"],
+ ["6月14日","20:00","瑞典","突尼西亚","瓜达卢佩 · BBVA体育场",12,"F"],
+ ["6月15日","18:00","沙乌地阿拉伯","乌拉圭","迈阿密花园 · 硬石体育场",13,"H"],
+ ["6月15日","12:00","西班牙","佛得角","亚特兰大 · 梅赛德斯-奔驰体育场",14,"H"],
+ ["6月15日","12:00","比利时","埃及","西雅图 · 流明球场",15,"G"],
+ ["6月15日","18:00","伊朗","新西兰","英格尔伍德 · SoFi体育场",16,"G"],
+ ["6月15日","21:00","奥地利","约旦","圣克拉拉 · 李维斯体育场",20,"J"],
+ ["6月16日","15:00","法国","塞内加尔","东卢瑟福 · 大都会人寿体育场",17,"I"],
+ ["6月16日","18:00","伊拉克","挪威","福克斯堡 · 吉列体育场",18,"I"],
+ ["6月16日","20:00","阿根廷","阿尔及利亚","堪萨斯城 · 箭头体育场",19,"J"],
+ ["6月17日","12:00","葡萄牙","刚果民主共和国","侯斯顿 · NRG体育场",23,"K"],
+ ["6月17日","20:00","乌兹别克斯坦","哥伦比亚","墨西哥城 · 阿兹特克体育场",24,"K"],
+ ["6月17日","15:00","英格兰","克罗地亚","阿灵顿 · AT&T体育场",22,"L"],
+ ["6月17日","19:00","加纳","巴拿马","多伦多 · BMO球场",21,"L"],
+ ["6月18日","12:00","捷克","南非","亚特兰大 · 梅赛德斯-奔驰体育场",25,"A"],
+ ["6月18日","19:00","墨西哥","韩国","萨波潘 · 阿克伦球场",28,"A"],
+ ["6月18日","12:00","瑞士","波黑","英格尔伍德 · SoFi体育场",26,"B"],
+ ["6月18日","15:00","加拿大","卡塔尔","温哥华 · 卑诗体育馆",27,"B"],
+ ["6月19日","18:00","苏格兰","摩洛哥","福克斯堡 · 吉列体育场",30,"C"],
+ ["6月19日","21:00","巴西","海地","费城 · 林肯金融球场",29,"C"],
+ ["6月19日","21:00","土耳其","巴拉圭","圣克拉拉 · 李维斯体育场",31,"D"],
+ ["6月19日","12:00","美国","澳大利亚","西雅图 · 流明球场",32,"D"],
+ ["6月20日","16:00","德国","科特迪瓦","多伦多 · BMO球场",33,"E"],
+ ["6月20日","19:00","厄瓜多尔","库拉索","堪萨斯城 · 箭头体育场",34,"E"],
+ ["6月20日","12:00","荷兰","瑞典","侯斯顿 · NRG体育场",35,"F"],
+ ["6月20日","22:00","突尼西亚","日本","瓜达卢佩 · BBVA体育场",36,"F"],
+ ["6月21日","12:00","比利时","伊朗","英格尔伍德 · SoFi体育场",39,"G"],
+ ["6月21日","18:00","新西兰","埃及","温哥华 · 卑诗体育馆",40,"G"],
+ ["6月21日","12:00","西班牙","沙乌地阿拉伯","亚特兰大 · 梅赛德斯-奔驰体育场",38,"H"],
+ ["6月21日","18:00","乌拉圭","佛得角","迈阿密花园 · 硬石体育场",37,"H"],
+ ["6月22日","17:00","法国","伊拉克","费城 · 林肯金融球场",42,"I"],
+ ["6月22日","20:00","挪威","塞内加尔","东卢瑟福 · 大都会人寿体育场",41,"I"],
+ ["6月22日","12:00","阿根廷","奥地利","阿灵顿 · AT&T体育场",43,"J"],
+ ["6月22日","20:00","约旦","阿尔及利亚","圣克拉拉 · 李维斯体育场",44,"J"],
+ ["6月23日","12:00","葡萄牙","乌兹别克斯坦","侯斯顿 · NRG体育场",47,"K"],
+ ["6月23日","20:00","哥伦比亚","刚果民主共和国","萨波潘 · 阿克伦球场",48,"K"],
+ ["6月23日","16:00","英格兰","加纳","福克斯堡 · 吉列体育场",45,"L"],
+ ["6月23日","19:00","巴拿马","克罗地亚","多伦多 · BMO球场",46,"L"],
+ ["6月24日","19:00","捷克","墨西哥","墨西哥城 · 阿兹特克体育场",53,"A"],
+ ["6月24日","19:00","南非","韩国","瓜达卢佩 · BBVA体育场",54,"A"],
+ ["6月24日","12:00","瑞士","加拿大","温哥华 · 卑诗体育馆",51,"B"],
+ ["6月24日","12:00","波黑","卡塔尔","西雅图 · 流明球场",52,"B"],
+ ["6月24日","18:00","苏格兰","巴西","迈阿密花园 · 硬石体育场",49,"C"],
+ ["6月24日","18:00","摩洛哥","海地","亚特兰大 · 梅赛德斯-奔驰体育场",50,"C"],
+ ["6月25日","19:00","土耳其","美国","英格尔伍德 · SoFi体育场",59,"D"],
+ ["6月25日","19:00","巴拉圭","澳大利亚","圣克拉拉 · 李维斯体育场",60,"D"],
+ ["6月25日","16:00","厄瓜多尔","德国","东卢瑟福 · 大都会人寿体育场",55,"E"],
+ ["6月25日","16:00","库拉索","科特迪瓦","费城 · 林肯金融球场",56,"E"],
+ ["6月25日","18:00","日本","瑞典","阿灵顿 · AT&T体育场",57,"F"],
+ ["6月25日","18:00","突尼西亚","荷兰","堪萨斯城 · 箭头体育场",58,"F"],
+ ["6月26日","20:00","新西兰","比利时","温哥华 · 卑诗体育馆",63,"G"],
+ ["6月26日","20:00","埃及","伊朗","西雅图 · 流明球场",64,"G"],
+ ["6月26日","19:00","佛得角","沙乌地阿拉伯","侯斯顿 · NRG体育场",65,"H"],
+ ["6月26日","18:00","乌拉圭","西班牙","萨波潘 · 阿克伦球场",66,"H"],
+ ["6月26日","15:00","挪威","法国","福克斯堡 · 吉列体育场",61,"I"],
+ ["6月26日","15:00","塞内加尔","伊拉克","多伦多 · BMO球场",62,"I"],
+ ["6月27日","21:00","阿尔及利亚","奥地利","堪萨斯城 · 箭头体育场",69,"J"],
+ ["6月27日","21:00","约旦","阿根廷","阿灵顿 · AT&T体育场",70,"J"],
+ ["6月27日","19:30","哥伦比亚","葡萄牙","迈阿密花园 · 硬石体育场",71,"K"],
+ ["6月27日","19:30","刚果民主共和国","乌兹别克斯坦","亚特兰大 · 梅赛德斯-奔驰体育场",72,"K"],
+ ["6月27日","17:00","巴拿马","英格兰","东卢瑟福 · 大都会人寿体育场",67,"L"],
+ ["6月27日","17:00","克罗地亚","加纳","费城 · 林肯金融球场",68,"L"]
+];
+// bracket columns
+const BRACKET=[
+ {h:"32 强 (部分)",ms:[
+  {id:"赛事73",a:"A组次名",b:"B组次名",m:"6月28日 · 英格尔伍德"},
+  {id:"赛事76",a:"C组首名",b:"F组次名",m:"6月29日 · 侯斯顿"},
+  {id:"赛事74",a:"E组首名",b:"第三名",m:"6月29日 · 福克斯堡"},
+  {id:"赛事79",a:"A组首名",b:"第三名",m:"6月30日 · 墨西哥城"},
+  {id:"赛事85",a:"B组首名",b:"第三名",m:"7月2日 · 温哥华"},
+  {id:"赛事86",a:"J组首名",b:"H组次名",m:"7月3日 · 迈阿密花园"}
+ ]},
+ {h:"16 强",ms:[
+  {id:"赛事90",a:"73胜方",b:"75胜方",m:"7月4日 · 侯斯顿"},
+  {id:"赛事89",a:"74胜方",b:"77胜方",m:"7月4日 · 费城"},
+  {id:"赛事92",a:"79胜方",b:"80胜方",m:"7月5日 · 墨西哥城"},
+  {id:"赛事95",a:"86胜方",b:"88胜方",m:"7月7日 · 亚特兰大"}
+ ]},
+ {h:"半准决赛",ms:[
+  {id:"赛事97",a:"89胜方",b:"90胜方",m:"7月9日 · 福克斯堡"},
+  {id:"赛事99",a:"91胜方",b:"92胜方",m:"7月11日 · 迈阿密花园"},
+  {id:"赛事100",a:"95胜方",b:"96胜方",m:"7月11日 · 堪萨斯城"}
+ ]},
+ {h:"准决赛",ms:[
+  {id:"赛事101",a:"97胜方",b:"98胜方",m:"7月14日 · 阿灵顿"},
+  {id:"赛事102",a:"99胜方",b:"100胜方",m:"7月15日 · 亚特兰大"}
+ ]},
+ {h:"决赛 · 季军战",ms:[
+  {id:"赛事103 季军战",a:"101负方",b:"102负方",m:"7月18日 · 迈阿密花园"},
+  {id:"赛事104 决赛",a:"101胜方",b:"102胜方",m:"7月19日 · 东卢瑟福",final:true}
+ ]}
+];
+
+/* ============ STATE ============ */
+let watch=new Set();
+const $=s=>document.querySelector(s);
+const $$=s=>document.querySelectorAll(s);
+
+/* ============ RENDER GROUPS ============ */
+function renderGroups(){
+ const grid=$("#groupGrid");grid.innerHTML="";
+ Object.entries(GROUPS).forEach(([g,teams])=>{
+  const matchCount=M.filter(m=>m[6]===g).length;
+  const card=document.createElement("div");card.className="gcard";
+  card.innerHTML=`<div class="ghead"><span class="gl">${g}组 <small>GROUP ${g}</small></span></div>
+   <div class="gteams">${teams.map(t=>teamRow(t)).join("")}</div>
+   <div class="gfoot"><span>${matchCount} 场小组赛</span><span class="viewmatches" data-g="${g}">查看赛程 →</span></div>`;
+  grid.appendChild(card);
+ });
+ bindTeams();
+ $$(".viewmatches").forEach(b=>b.onclick=()=>{switchView("schedule");$("#fGroup").value=b.dataset.g;applyFilters();});
+}
+function teamRow(t){
+ const host=HOSTS.includes(t)?'<span class="host">主办</span>':'';
+ const w=watch.has(t)?"watched":"";
+ const seed=SEED[t]?'<span style="font-family:Oswald;font-size:10px;color:#a07c2c;letter-spacing:.05em">第一档</span>':'';
+ return `<div class="team ${w}" data-team="${t}"><span class="flag">${FLAG(t,26)}</span>
+   <span class="tn">${t}</span>${seed}${host}<span class="star">★</span></div>`;
+}
+function bindTeams(){
+ $$(".team").forEach(el=>el.onclick=()=>toggle(el.dataset.team));
+}
+
+/* ============ WATCH TOGGLE ============ */
+function toggle(t){
+ if(watch.has(t)){watch.delete(t);toast(`已移除 ${t}`);}
+ else{watch.add(t);toast(`★ 已关注 ${t}`);}
+ sync();
+}
+function sync(){
+ $("#wcount").textContent=watch.size;
+ renderGroups();
+ if($("#view-schedule").classList.contains("active"))applyFilters();
+ if($("#view-watch").classList.contains("active"))renderWatch();
+}
+
+/* ============ SCHEDULE ============ */
+function initFilters(){
+ const fg=$("#fGroup");Object.keys(GROUPS).forEach(g=>fg.innerHTML+=`<option value="${g}">${g}组</option>`);
+ const ft=$("#fTeam");Object.keys(CODE).sort().forEach(t=>ft.innerHTML+=`<option value="${t}">${t}</option>`);
+ ["fGroup","fTeam","fStage"].forEach(id=>$("#"+id).onchange=applyFilters);
+ $("#fWatch").onchange=applyFilters;
+}
+function applyFilters(){
+ const g=$("#fGroup").value,t=$("#fTeam").value,wonly=$("#fWatch").checked;
+ let rows=M.filter(m=>{
+  if(g!=="all"&&m[6]!==g)return false;
+  if(t!=="all"&&m[2]!==t&&m[3]!==t)return false;
+  if(wonly&&!watch.has(m[2])&&!watch.has(m[3]))return false;
+  return true;
+ });
+ renderSchedule(rows);
+ $("#schedSub").textContent=`共 ${rows.length} 场比赛`+(wonly?" · 仅显示清单球队":"");
+}
+function renderSchedule(rows){
+ const body=$("#schedBody");body.innerHTML="";
+ if(!rows.length){body.innerHTML=`<div class="empty"><div class="ic">⚽</div><p>没有符合条件的比赛<br>试试调整筛选条件</p></div>`;return;}
+ const byDay={};rows.forEach(m=>{(byDay[m[0]]=byDay[m[0]]||[]).push(m);});
+ Object.entries(byDay).forEach(([day,ms])=>{
+  const dnum=day.match(/(\d+)日/)[1];
+  const dg=document.createElement("div");dg.className="daygroup";
+  dg.innerHTML=`<div class="dayhead"><span class="dnum">${dnum}</span><span class="dtxt">${day} · 6月</span><span class="dline"></span></div>
+   <div class="mlist">${ms.map(matchCard).join("")}</div>`;
+  body.appendChild(dg);
+ });
+}
+function matchCard(m){
+ const[date,time,home,away,ven,no,grp]=m;
+ const hot=watch.has(home)||watch.has(away);
+ const hw=watch.has(home)?"watch":"",aw=watch.has(away)?"watch":"";
+ return `<div class="match ${hot?'hot':''}">
+   <div class="mtop"><span class="mtag">${grp}组 · 赛事${no}</span><span>${time}</span></div>
+   <div class="mteams">
+     <div class="mside ${hw}"><span class="flag">${FLAG(home,28)}</span><span class="nm">${home}</span></div>
+     <span class="vs">VS</span>
+     <div class="mside r ${aw}"><span class="flag">${FLAG(away,28)}</span><span class="nm">${away}</span></div>
+   </div>
+   <div class="mfoot"><span class="ven">📍 ${ven}</span></div>
+ </div>`;
+}
+
+/* ============ WATCHLIST ============ */
+function renderWatch(){
+ const body=$("#watchBody");
+ if(!watch.size){
+  body.innerHTML=`<div class="empty"><div class="ic">★</div><p>清单还是空的<br>到「小组」页面点击球队的 ★ 开始添加你想追的队伍</p></div>`;
+  $("#watchSub").textContent="";return;
+ }
+ const rows=M.filter(m=>watch.has(m[2])||watch.has(m[3]));
+ $("#watchSub").textContent=`${watch.size} 支球队 · ${rows.length} 场相关小组赛`;
+ const chips=[...watch].map(t=>`<div class="wlchip"><span class="flag">${FLAG(t,22)}</span><span>${t}</span><span class="x" data-rm="${t}">×</span></div>`).join("");
+ body.innerHTML=`<div class="wlteams">${chips}</div>`;
+ const tmp=document.createElement("div");
+ const byDay={};rows.forEach(m=>{(byDay[m[0]]=byDay[m[0]]||[]).push(m);});
+ Object.entries(byDay).forEach(([day,ms])=>{
+  const dnum=day.match(/(\d+)日/)[1];
+  const dg=document.createElement("div");dg.className="daygroup";
+  dg.innerHTML=`<div class="dayhead"><span class="dnum">${dnum}</span><span class="dtxt">${day} · 6月</span><span class="dline"></span></div>
+   <div class="mlist">${ms.map(matchCard).join("")}</div>`;
+  tmp.appendChild(dg);
+ });
+ body.appendChild(tmp);
+ $$("[data-rm]").forEach(x=>x.onclick=()=>toggle(x.dataset.rm));
+}
+
+/* ============ BRACKET ============ */
+function renderBracket(){
+ const wrap=$("#bracketWrap");wrap.innerHTML="";
+ BRACKET.forEach(col=>{
+  const c=document.createElement("div");c.className="bcol";
+  c.innerHTML=`<div class="bcolhead">${col.h}</div>`+col.ms.map(m=>
+   `<div class="bmatch ${m.final?'final':''}"><div class="bm-id">${m.id}</div>
+     <div class="bm-r">${m.a}</div><div class="bm-r">${m.b}</div>
+     <div class="bm-meta">${m.m}</div></div>`).join("");
+  wrap.appendChild(c);
+ });
+}
+
+/* ============ NAV ============ */
+function switchView(v){
+ $$(".tab").forEach(t=>t.classList.toggle("active",t.dataset.view===v));
+ $$(".view").forEach(s=>s.classList.remove("active"));
+ $("#view-"+v).classList.add("active");
+ if(v==="schedule")applyFilters();
+ if(v==="watch")renderWatch();
+ if(v==="bracket")renderBracket();
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+$$(".tab").forEach(t=>t.onclick=()=>switchView(t.dataset.view));
+$("#watchTab").onclick=()=>{
+ $$(".tab").forEach(t=>t.classList.remove("active"));
+ $$(".view").forEach(s=>s.classList.remove("active"));
+ $("#view-watch").classList.add("active");renderWatch();window.scrollTo({top:0,behavior:"smooth"});
+};
+
+/* ============ TOAST ============ */
+let tt;
+function toast(msg){const el=$("#toast");el.textContent=msg;el.classList.add("show");
+ clearTimeout(tt);tt=setTimeout(()=>el.classList.remove("show"),1800);}
+
+/* ============ INIT ============ */
+renderGroups();initFilters();$("#wcount").textContent=0;
+</script>
+</body>
+</html>
